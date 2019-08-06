@@ -1,0 +1,7 @@
+{
+    "amountOfWorkPerSecond" : 123,
+    "urlToPostMessageTo" : "http://logicapp.azure.com", 
+    "maxConcurrentConnections" : "",
+    "WEBSITE_MAX_DYNAMIC_SCALE_OUT" : "",
+    "prefetchMessageCount" : "100"
+}
