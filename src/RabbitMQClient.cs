@@ -3,21 +3,24 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace azure_pub_sub.src
 {
     public delegate void MessageReceived(string message);
 
-    public class RabbitMQClient
+    public class RabbitMQMessagesRepository<T> : IMessagingRepository<T> where T : PubSubSpecification
     {
         private static ConnectionFactory factory;
         private MessageReceived _messageReceived;
         private string _currentMessage;
 
+        RabbitMQContext _dbContext;  
 
-        public RabbitMQClient(string hostname = "localhost")
+        public RabbitMQMessagesRepository(RabbitMQContext dbContext)
         {
-            factory = new ConnectionFactory() { HostName = hostname };
+            // factory = new ConnectionFactory() { HostName = hostname };
+            _dbContext = dbContext; 
         }
 
         public bool checkConnection()
@@ -31,7 +34,6 @@ namespace azure_pub_sub.src
 
         public void RegisterMessageWatcher(MessageReceived watcher)
         {
-
             _messageReceived += watcher;
         }
 
@@ -77,7 +79,7 @@ namespace azure_pub_sub.src
 
                     channel.BasicConsume(queue: queueName,
                                          autoAck: true,
-                                         consumer: consumer);
+                                         consumer: new EventingBasicConsumer(channel));
                 }
             }
         }
@@ -105,12 +107,12 @@ namespace azure_pub_sub.src
 
         }
 
-        public string publishMessage(string queueName = "hello", string messageContent = "Hello World")
+        public string publishMessage(string queueName = "testQueue", string messageContent = "Hello World")
         {
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
-                channel.QueueDeclare(queue: "hello",
+                channel.QueueDeclare(queue: queueName,
                                      durable: false,
                                      exclusive: false,
                                      autoDelete: false,
@@ -120,7 +122,7 @@ namespace azure_pub_sub.src
                 var body = Encoding.UTF8.GetBytes(message);
 
                 channel.BasicPublish(exchange: "",
-                                     routingKey: "hello",
+                                     routingKey: queueName,
                                      basicProperties: null,
                                      body: body);
                 return $"Sent {message} to {channel} ";
@@ -128,5 +130,58 @@ namespace azure_pub_sub.src
             }
         }
 
+        public void ReceiveMessagesWithEvents() 
+        {
+            using (var connection = factory.CreateConnection()) 
+            using(IModel channel = connection.CreateModel())
+            {
+                channel.BasicQos(0, 1, false); 
+                EventingBasicConsumer eventingBasicConsumer = new EventingBasicConsumer(channel); 
+
+                eventingBasicConsumer.Received += (sender, basicDeliveryEventArgs) => 
+                {
+                    IBasicProperties basicProperties = basicDeliveryEventArgs.BasicProperties; 
+                    Console.WriteLine("Message received by the event based consumer"); 
+                    Debug.WriteLine($"Message: {Encoding.UTF8.GetString(basicDeliveryEventArgs.Body)}");  
+                    channel.BasicAck(basicDeliveryEventArgs.DeliveryTag, false); 
+                }; 
+
+                channel.BasicConsume("testQueue", false, eventingBasicConsumer); 
+
+            }
+        }
+
+        public T GetNextMessage()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<T> List()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Add(T entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is RabbitMQMessagesRepository<T> repository &&
+                   EqualityComparer<MessageReceived>.Default.Equals(_messageReceived, repository._messageReceived) &&
+                   _currentMessage == repository._currentMessage &&
+                   MostRecentMessage == repository.MostRecentMessage;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
     }
 }

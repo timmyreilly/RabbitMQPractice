@@ -10,20 +10,23 @@ namespace azure_pub_sub
             // give me the data 
             // I'm going to go with rabbitMQ 
 
-            string queueName = "test";
+            string queueName = "testQueue";
             string message = "Don't mess with the stig";
 
-            RabbitMQClient rabbit = new RabbitMQClient("localhost");
+            RabbitMQClient rabbit = new RabbitMQRepository("rabbitDemo.westus.azurecontainer.io");
             string response = rabbit.publishMessage(queueName, message);
             Console.WriteLine(response);
 
             // get data from rabbitMQ: 
 
-            rabbit.RegisterMessageWatcher(LogMessageToConsole);
-            foreach (var n in rabbit.generateMessagesFromRabbitMQ())
-            {
-                Console.WriteLine(n);
-            }
+            rabbit.ReceiveMessagesWithEvents(); 
+
+            // rabbit.RegisterMessageWatcher(LogMessageToConsole);
+            // foreach (var n in rabbit.generateMessagesFromRabbitMQ())
+            // {
+            //     Console.WriteLine(n);
+            // }
+
 
 
             // authorize with the function
@@ -31,7 +34,7 @@ namespace azure_pub_sub
 
             // authorize with the storage service
 
-            // edit the application settings
+            // edit the application settings5
             // update the URL
             // upsert the MAX_CONCURRENT_SCALE_OUT
 
@@ -41,7 +44,7 @@ namespace azure_pub_sub
             // write to the file 
             // upload the file 
             Console.WriteLine("All Done, press any key to exit"); 
-            Console.ReadKey();
+            Console.Read();
 
         }
 

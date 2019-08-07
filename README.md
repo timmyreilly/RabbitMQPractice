@@ -3,3 +3,13 @@
 
 `docker run -d --hostname my-rabbit --name some-rabbit rabbitmq:3 -p 5672:5672` 
 
+# Starting Container instance in Azure: 
+
+`az group create --name RabbitMQDemo --location westus`
+
+`az container create --resource-group RabbitMQDemo --name rabbitInstance --image rabbitmq:3 --ports 5672:5672 --dns-name-label rabbitDemo`
+
+Get the logs of the container: 
+
+`az container logs -g RabbitMQDemo --name rabbitinstance`
+
