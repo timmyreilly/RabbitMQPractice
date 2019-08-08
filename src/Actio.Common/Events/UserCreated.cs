@@ -7,6 +7,7 @@ namespace Actio.Common.Events
 
         protected UserCreated()
         {
+            // so that our serializer will not have any issues 
         }
 
         public UserCreated(string email, string name) 

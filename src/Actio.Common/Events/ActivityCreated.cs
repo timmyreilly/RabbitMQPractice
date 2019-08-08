@@ -5,7 +5,7 @@ namespace Actio.Common.Events
     public class ActivityCreated : IAuthenticatedEvent
     {
         public Guid Id { get; }
-        public Guid UserId { get; }
+        public Guid UserId { get; set; }
 
         public string Category { get; }
         public string Name { get; }

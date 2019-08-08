@@ -6,7 +6,6 @@ namespace Actio.Common.Events
 
         protected UserAuthenticated() 
         {
-
         }
 
         public UserAuthenticated(string email)
