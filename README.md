@@ -13,3 +13,10 @@ Get the logs of the container:
 
 `az container logs -g RabbitMQDemo --name rabbitinstance`
 
+
+# Some other examples: 
+
+`az container create --resource-group RabbitMQDemo --name rabbittwo --image rabbitmq:3-management --ports 5672 5673 15672 --dns-name-label rabbittwo --restart-policy OnFailure`
+
+`az container attach -g RabbitMQDemo --name rabbittwo`
+
