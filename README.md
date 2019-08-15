@@ -40,13 +40,17 @@ Create an Ubuntu VM in said Availability Set:
 
 Open our RabbitMQ Ports: 
 
-- `az vm open-port -g groupSandbox -n rabbitNodeOne --port 15672 --priority 350`
-- `az vm open-port -g groupSandbox -n rabbitNodeOne --port 5672 --priority 300`
-- `az vm open-port -g groupSandbox -n rabbitNodeTwo --port 15672 --priority 350`
-- `az vm open-port -g groupSandbox -n rabbitNodeTwo --port 5672 --priority 300`
+`az vm open-port -g groupSandbox -n rabbitNodeOne --port 15672 --priority 350`
 
-- `az vm open-port -g groupSandbox -n rabbitNodeOne --port 4369 --priority 400`
-- `az vm open-port -g groupSandbox -n rabbitNodeTwo --port 4369 --priority 400`
+`az vm open-port -g groupSandbox -n rabbitNodeOne --port 5672 --priority 300`
+
+`az vm open-port -g groupSandbox -n rabbitNodeTwo --port 15672 --priority 350`
+
+`az vm open-port -g groupSandbox -n rabbitNodeTwo --port 5672 --priority 300`
+
+`az vm open-port -g groupSandbox -n rabbitNodeOne --port 4369 --priority 400`
+
+`az vm open-port -g groupSandbox -n rabbitNodeTwo --port 4369 --priority 400`
 
 Get the public IPs of our VMs; 
 
