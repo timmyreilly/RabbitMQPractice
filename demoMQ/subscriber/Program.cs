@@ -11,7 +11,7 @@ namespace subscriber
         {
             using (var bus = RabbitHutch.CreateBus(RabbitClusterAzure.ConnectionString))
             {
-                var retValue = bus.Subscribe("Sample_Topic", HandleTextMessage);
+                var retValue = bus.Subscribe<contracts.Message>("Sample_Topic", HandleTextMessage);
 
                 Console.WriteLine("Listening for messages. Hit  to quit.");
                 Console.ReadLine();
