@@ -88,14 +88,6 @@ Install Management portal for RabbitMQ
 
 `sudo invoke-rc.d rabbitmq-server start`
 
-### [Create an admin user](https://stackoverflow.com/questions/40436425/how-do-i-create-or-add-a-user-to-rabbitmq): 
-
-`sudo rabbitmqctl add_user test test`
-
-`sudo rabbitmqctl set_user_tags  test administrator`
-
-`sudo rabbitmqctl set_permissions -p / test '.*' '.*' '.*'`
-
 ### Configure the cluster: 
 
 In rabbitNodeTwo: 
@@ -107,6 +99,14 @@ In rabbitNodeTwo:
 `sudo rabbitmqctl start_app`
 
 `sudo rabbitmqctl set_cluster_name RabbitCluster`
+
+### [Create an admin user](https://stackoverflow.com/questions/40436425/how-do-i-create-or-add-a-user-to-rabbitmq): 
+
+`sudo rabbitmqctl add_user test test`
+
+`sudo rabbitmqctl set_user_tags  test administrator`
+
+`sudo rabbitmqctl set_permissions -p / test '.*' '.*' '.*'`
 
 ### Login to the management portal: 
 
