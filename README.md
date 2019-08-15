@@ -73,20 +73,27 @@ Install RabbitMQ:
 Create cookie in both machines: 
 
 `echo 'ERLANGCOOKIEVALUE' | sudo tee /var/lib/rabbitmq/.erlang.cookie`
+
 `sudo chown rabbitmq:rabbitmq /var/lib/rabbitmq/.erlang.cookie`
+
 `sudo chmod 400 /var/lib/rabbitmq/.erlang.cookie`
+
 `sudo invoke-rc.d rabbitmq-server start`
 
 Install Management portal for RabbitMQ 
 
 `sudo rabbitmq-plugins enable rabbitmq_management`
+
 `sudo invoke-rc.d rabbitmq-server stop`
+
 `sudo invoke-rc.d rabbitmq-server start`
 
 ### [Create an admin user](https://stackoverflow.com/questions/40436425/how-do-i-create-or-add-a-user-to-rabbitmq): 
 
 `sudo rabbitmqctl add_user test test`
+
 `sudo rabbitmqctl set_user_tags  test administrator`
+
 `sudo rabbitmqctl set_permissions -p / test '.*' '.*' '.*'`
 
 ### Configure the cluster: 
@@ -94,8 +101,11 @@ Install Management portal for RabbitMQ
 In rabbitNodeTwo: 
 
 `sudo rabbitmqctl stop_app`
+
 `sudo rabbitmqctl join_cluster rabbit@rabbitNodeOne`
+
 `sudo rabbitmqctl start_app`
+
 `sudo rabbitmqctl set_cluster_name RabbitCluster`
 
 ### Login to the management portal: 
