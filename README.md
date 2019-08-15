@@ -40,13 +40,13 @@ Create an Ubuntu VM in said Availability Set:
 
 Open our RabbitMQ Ports: 
 
-`az vm open-port -g groupSandbox -n rabbitNodeOne --port 15672 --priority 350`
-`az vm open-port -g groupSandbox -n rabbitNodeOne --port 5672 --priority 300`
-`az vm open-port -g groupSandbox -n rabbitNodeTwo --port 15672 --priority 350`
-`az vm open-port -g groupSandbox -n rabbitNodeTwo --port 5672 --priority 300`
+- `az vm open-port -g groupSandbox -n rabbitNodeOne --port 15672 --priority 350`
+- `az vm open-port -g groupSandbox -n rabbitNodeOne --port 5672 --priority 300`
+- `az vm open-port -g groupSandbox -n rabbitNodeTwo --port 15672 --priority 350`
+- `az vm open-port -g groupSandbox -n rabbitNodeTwo --port 5672 --priority 300`
 
-`az vm open-port -g groupSandbox -n rabbitNodeOne --port 4369 --priority 400`
-`az vm open-port -g groupSandbox -n rabbitNodeTwo --port 4369 --priority 400`
+- `az vm open-port -g groupSandbox -n rabbitNodeOne --port 4369 --priority 400`
+- `az vm open-port -g groupSandbox -n rabbitNodeTwo --port 4369 --priority 400`
 
 Get the public IPs of our VMs; 
 
@@ -97,7 +97,7 @@ In rabbitNodeTwo:
 ### Login to the management portal: 
 
 In the browser go to: 
-`http://13.64.99.73:15672/`
+`http://13.64.99.73:15672/` || `http://your.vm.ip.address:15672` 
 
 - Username: test
 - Password: test 
