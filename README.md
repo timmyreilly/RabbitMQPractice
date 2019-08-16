@@ -90,7 +90,83 @@ Create three vms in our availability set:
 
 `az vm create -g sandboxGroup -n rabbitNodeThree --authentication-type password --image UbuntuLTS --availability-set RabbitMQAvailabilitySet --admin-username conductor --admin-password Password1234! --nics myNic3`
 
-Let's install rabbitMQ 
+# Let's install rabbitMQ 
+
+Get our public IP of our Load Balancer; 
+
+`az network public-ip list -g sandboxGroup -o table` 
+
+Connect to our machines and install RabbitMQ
+
+`ssh conductor@40.118.207.6 -p 4221`
+
+`ssh conductor@40.118.207.6 -p 4222`
+
+`ssh conductor@40.118.207.6 -p 4223`
+
+## Install RabbitMQ:
+
+**on all machines run these commands:**
+
+`sudo add-apt-repository 'deb http://www.rabbitmq.com/debian/ testing main'`
+
+`sudo apt-get update`
+
+`sudo apt-get -q -y --force-yes install rabbitmq-server`
+
+Create cookie in both machines: 
+
+`echo 'ERLANGCOOKIEVALUE' | sudo tee /var/lib/rabbitmq/.erlang.cookie`
+
+`sudo chown rabbitmq:rabbitmq /var/lib/rabbitmq/.erlang.cookie`
+
+`sudo chmod 400 /var/lib/rabbitmq/.erlang.cookie`
+
+`sudo invoke-rc.d rabbitmq-server start`
+
+Install Management portal for RabbitMQ 
+
+`sudo rabbitmq-plugins enable rabbitmq_management`
+
+`sudo invoke-rc.d rabbitmq-server stop`
+
+`sudo invoke-rc.d rabbitmq-server start`
+
+### Configure the cluster: 
+
+**In rabbitNodeTwo and Three:** 
+
+`sudo rabbitmqctl stop_app`
+
+`sudo rabbitmqctl join_cluster rabbit@rabbitNodeOne`
+
+`sudo rabbitmqctl start_app`
+
+`sudo rabbitmqctl set_cluster_name RabbitCluster`
+
+### [Create an admin user](https://stackoverflow.com/questions/40436425/how-do-i-create-or-add-a-user-to-rabbitmq): 
+
+**In `rabbitNodeOne`**
+
+`sudo rabbitmqctl add_user test test`
+
+`sudo rabbitmqctl set_user_tags  test administrator`
+
+`sudo rabbitmqctl set_permissions -p / test '.*' '.*' '.*'`
+
+### Login to the management portal: 
+
+In the browser go to: 
+`http://13.64.99.73:15672/` || `http://your.vm.ip.address:15672` 
+
+- Username: test
+- Password: test 
+
+You should see three nodes! 
+
+
+
+
 
 
 ### OLD 
@@ -120,71 +196,7 @@ Open our RabbitMQ Ports:
 
 `az vm open-port -g sandboxGroup -n rabbitNodeTwo --port 4369 --priority 400`
 
-Get the public IPs of our VMs; 
 
-`az vm list-ip-addresses -g sandboxGroup -o table` 
-
-Connect to our machines and install RabbitMQ
-
-`ssh conductor@40.118.230.64`
-
-`ssh conductor@13.64.99.73`
-
-Install RabbitMQ: 
-
-`sudo add-apt-repository 'deb http://www.rabbitmq.com/debian/ testing main`
-
-`sudo apt-get update`
-
-`sudo apt-get -q -y --force-yes install rabbitmq-server`
-
-Create cookie in both machines: 
-
-`echo 'ERLANGCOOKIEVALUE' | sudo tee /var/lib/rabbitmq/.erlang.cookie`
-
-`sudo chown rabbitmq:rabbitmq /var/lib/rabbitmq/.erlang.cookie`
-
-`sudo chmod 400 /var/lib/rabbitmq/.erlang.cookie`
-
-`sudo invoke-rc.d rabbitmq-server start`
-
-Install Management portal for RabbitMQ 
-
-`sudo rabbitmq-plugins enable rabbitmq_management`
-
-`sudo invoke-rc.d rabbitmq-server stop`
-
-`sudo invoke-rc.d rabbitmq-server start`
-
-### Configure the cluster: 
-
-In rabbitNodeTwo: 
-
-`sudo rabbitmqctl stop_app`
-
-`sudo rabbitmqctl join_cluster rabbit@rabbitNodeOne`
-
-`sudo rabbitmqctl start_app`
-
-`sudo rabbitmqctl set_cluster_name RabbitCluster`
-
-### [Create an admin user](https://stackoverflow.com/questions/40436425/how-do-i-create-or-add-a-user-to-rabbitmq): 
-
-`sudo rabbitmqctl add_user test test`
-
-`sudo rabbitmqctl set_user_tags  test administrator`
-
-`sudo rabbitmqctl set_permissions -p / test '.*' '.*' '.*'`
-
-### Login to the management portal: 
-
-In the browser go to: 
-`http://13.64.99.73:15672/` || `http://your.vm.ip.address:15672` 
-
-- Username: test
-- Password: test 
-
-You should see two nodes! 
 
 
 # TODO: Load balancing configuration! 
