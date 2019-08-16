@@ -157,7 +157,7 @@ Install Management portal for RabbitMQ
 ### Login to the management portal: 
 
 In the browser go to: 
-`http://13.64.99.73:15672/` || `http://your.vm.ip.address:15672` 
+`http://your.loadbalancer.public-ip.address:15672` 
 
 - Username: test
 - Password: test 
@@ -169,7 +169,7 @@ You should see three nodes!
 
 
 
-### OLD 
+# OLD Unverified  
 
 
 Create an availability set: 
