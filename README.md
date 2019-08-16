@@ -123,7 +123,7 @@ You should see two nodes!
 
 ### Create a public ip for our cluster: 
 
-`az network public-ip create -g groupSandbox --name publicIPforRabbit`
+`az network public-ip create -g groupSandbox --name publicIpforRabbitCluster`
 
 Create a load balancer 
 
@@ -133,9 +133,71 @@ Create a health probe:
 
 `az network lb probe create -g groupSandbox --lb-name rabbitClusterLoadBalancer --name rabbitHealthProbe --protocol tcp --port 5672`
 
+Create a backend pool: 
+
+`az network lb address-pool create -g groupSandbox --name rabbitNodeBackend --lb-name rabbitclusterloadbalancer`
+
+Create a rule for your Load Balancer: 
+
+`az network lb rule create -g groupSandbox --lb-name rabbitClusterLoadBalancer --protocol tcp --frontend-port 5672 --backend-port 5672 --name rabbitMqLBRule --backend-pool-name rabbitNodeBackend`
+
+Add the VM NIC to the Pool: 
+
+`az network nic ip-config create --name privatePoolConfigOne --nic-name rabbitNodeOnevmnic --lb-address-pools rabbitNodeBackend --lb-name rabbitClusterLoadBalancer -g groupSandbox`
+
+`az network nic ip-config create --name privatePoolConfigTwo --nic-name rabbitNodeTwoVMNic --lb-address-pools rabbitNodeBackend --lb-name rabbitClusterLoadBalancer -g groupSandbox`
+
+# Create a public IP for our external load balancer 
+
+`az network public-ip create -n publicIpForRabbitCluster -g groupSandbox`
+
+# Create a public load balancer: 
+
+`az network lb create --name publicLoadBalancerForRabbit -g groupSandbox --sku Basic --backend-pool-name rabbitPool --public-ip-address publicIpforrabbitcluster`
+
+# Add our Nics to the LB Address Pool
+
+`az network nic ip-config create --name ipPoolConfigOne --nic-name rabbitNodeOnevmnic --lb-address-pools rabbitPool --lb-name publicLoadBalancerForRabbit -g groupSandbox`
+
+`az network nic ip-config create --name ipPoolConfigTwo --nic-name rabbitNodeOnevmnic --lb-address-pools rabbitPool --lb-name publicLoadBalancerForRabbit -g groupSandbox`
+
+# Create our health probe to keep our lb aware: 
+
+`az network lb probe create -g groupSandbox --lb-name publicLoadBalancerForrabbit --name rabbitHealth --protocol tcp --port 5672`
+
+# Create a rule: 
+
+`az network lb rule create -g groupSandbox --lb-name publicLoadBalancerForRabbit --protocol tcp --frontend-port 5672 --backend-port 5672 --name rabbitMQRule --backend-pool-name rabbitpool --probe-name rabbitHealth`
+
+
+# Send some traffic to our load balancer? 
+
+
+
+
+# Create our rule from the public ip to the backend pool
+
+`az network lb rule create -g groupSandbox --lb-name publicLoadBalancerForRabbit --protocol tcp --frontend-port 5672 --backend-port 5672 --name rabbitMQRule --backend-pool-name rabbitpool`
+
+
+
+
+
+
+# JUNK 
+
+
+`/subscriptions/5c514147-21c3-4f7e-8329-625443da4254/resourceGroups/groupSandbox/providers/Microsoft.Network/loadBalancers/rabbitClusterLoadBalancer/backendAddressPools/rabbitNodeBackend`
+
+`/subscriptions/5c514147-21c3-4f7e-8329-625443da4254/resourceGroups/groupSandbox/providers/Microsoft.Network/loadBalancers/rabbitClusterLoadBalancer/loadBalancingRules/rabbitMqLBRule`
+
+`az network nic update -g groupSandBox -n rabbitnodeonevmnic --add ipConfigurations.loadBalancerBackendAddressPools="/subscriptions/5c514147-21c3-4f7e-8329-625443da4254/resourceGroups/groupSandbox/providers/Microsoft.Network/loadBalancers/rabbitClusterLoadBalancer/backendAddressPools/rabbitNodeBackend"`
+
+`az network nic ip-config update -g groupSandbox -n rabbitNodeOnevmnic --lb-name rabbitClusterLoadBalancer --lb-address-pools rabbitNodeBackend`
+
 Create a backend pool to our availability set: 
 
-`az network lb rule create -g groupSandbox --lb-name rabbitClusterLoadBalancer --name myRabbitRule --protocol tcp --frontend-port 80 --backend-port 80 --frontend-ip-name myFrontEndIp`
+`az network lb rule create -g groupSandbox --lb-name rabbitClusterLoadBalancer --name myRabbitRule --protocol tcp --frontend-port 5672 --backend-port 5672 --frontend-ip-name publicIpforRabbitCluster`
 
 
 References: 
