@@ -66,9 +66,9 @@ Create Network Security Group and Rule port 22:
 
 Create a nsg rule for port 5672 and 15672 
 
-`az network nsg rule create -g sandboxGroup --nsg-name myNSG --name networkSecurityGroupSSHRule --protocol tcp --direction inbound --source-address-prefix '*' --source-port-range '*' --destination-address-prefix '*' --destination-port-range 5672 --access allow --priority 1020`
+`az network nsg rule create -g sandboxGroup --nsg-name myNSG --name rabbitProtoRule --protocol tcp --direction inbound --source-address-prefix '*' --source-port-range '*' --destination-address-prefix '*' --destination-port-range 5672 --access allow --priority 1020`
 
-`az network nsg rule create -g sandboxGroup --nsg-name myNSG --name networkSecurityGroupSSHRule --protocol tcp --direction inbound --source-address-prefix '*' --source-port-range '*' --destination-address-prefix '*' --destination-port-range 15672 --access allow --priority 1030`
+`az network nsg rule create -g sandboxGroup --nsg-name myNSG --name rabbitMGMTRule --protocol tcp --direction inbound --source-address-prefix '*' --source-port-range '*' --destination-address-prefix '*' --destination-port-range 15672 --access allow --priority 1030`
 
 Create three Network Cards and associate with load balancer and NSG: 
 
