@@ -11,7 +11,6 @@ namespace contracts
         // 52.175.245.75
     }
 
-
     public class Message
     {
         public string Body { get; set; }
