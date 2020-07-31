@@ -165,6 +165,13 @@ In the browser go to:
 You should see three nodes! 
 
 
+# Scale Set Notes:
+
+Instead of an availability set let's use a scale set. 
+
+Clustering Script Blog: https://thoughtsimproved.wordpress.com/2015/01/03/tech-recipe-setup-a-rabbitmq-cluster-on-ubuntu/ 
+
+Virtual Machine Scale Set Docs https://docs.microsoft.com/en-us/azure/virtual-machine-scale-sets/quick-create-cli 
 
 
 
@@ -259,13 +266,6 @@ Add the VM NIC to the Pool:
 `az network lb rule create -g sandboxGroup --lb-name publicLoadBalancerForRabbit --protocol tcp --frontend-port 5672 --backend-port 5672 --name rabbitMQRule --backend-pool-name rabbitpool`
 
 
-
-
-
-
-# JUNK 
-
-
 `/subscriptions/5c514147-21c3-4f7e-8329-625443da4254/resourceGroups/sandboxGroup/providers/Microsoft.Network/loadBalancers/rabbitClusterLoadBalancer/backendAddressPools/rabbitNodeBackend`
 
 `/subscriptions/5c514147-21c3-4f7e-8329-625443da4254/resourceGroups/sandboxGroup/providers/Microsoft.Network/loadBalancers/rabbitClusterLoadBalancer/loadBalancingRules/rabbitMqLBRule`
@@ -279,6 +279,6 @@ Create a backend pool to our availability set:
 `az network lb rule create -g sandboxGroup --lb-name rabbitClusterLoadBalancer --name myRabbitRule --protocol tcp --frontend-port 5672 --backend-port 5672 --frontend-ip-name publicIpforRabbitCluster`
 
 
-References: 
+# References: 
 [Docs.Microsoft.com](https://docs.microsoft.com/en-us/)
 [RabbitMQ High-availability clusters on Azure VM by Moim Hossain](https://moimhossain.com/2015/01/23/rabbitmq-high-availability-clusters-on-azure-vm/)
